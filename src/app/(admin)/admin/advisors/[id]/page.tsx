@@ -144,9 +144,12 @@ export default function AdvisorDetailPage() {
     );
   }
 
-  const orders = advisor.orders || [];
-  const activeOrders = orders.filter(o => !o.isPast && o.status !== 'completed' && o.status !== 'cancelled');
-  const pastOrders = orders.filter(o => o.isPast || o.status === 'completed');
+  // Dedupe orders by id
+  const uniqueOrders = Array.from(
+    new Map((advisor.orders || []).map(o => [o.id, o])).values()
+  );
+  const activeOrders = uniqueOrders.filter(o => !o.isPast && o.status !== 'completed' && o.status !== 'cancelled');
+  const pastOrders = uniqueOrders.filter(o => o.isPast || o.status === 'completed');
   const displayOrders = activeTab === 'upcoming' ? activeOrders : pastOrders;
 
   return (
