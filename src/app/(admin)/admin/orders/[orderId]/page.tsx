@@ -114,8 +114,13 @@ interface Order {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-  completed: { label: 'Completed', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+  // From Direct_Mail_Jobs
+  completed: { label: 'Mailed', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+  mailed: { label: 'Mailed', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+  pending_list: { label: 'Pending List', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
   in_progress: { label: 'In Progress', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
+  at_printer: { label: 'At Printer', color: 'text-violet-400', bg: 'bg-violet-500/10 border-violet-500/20' },
+  // Legacy
   pending: { label: 'Pending', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
   cancelled: { label: 'Cancelled', color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
 };

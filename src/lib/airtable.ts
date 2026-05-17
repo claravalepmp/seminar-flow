@@ -844,6 +844,21 @@ export async function getEnrichedOrders(): Promise<FullOrder[]> {
     const dmIds = getLinkedIds(order.Direct_Mail_Jobs);
     const directMailJobs = dmIds.map(dmId => directMailJobMap.get(dmId)).filter(Boolean) as FullDirectMailJob[];
 
+    // Derive status from Direct Mail Jobs (this is the source of truth)
+    let derivedStatus = 'pending';
+    if (directMailJobs.length > 0) {
+      const allMailed = directMailJobs.every(dm => dm.status === 'Mailed');
+      const anyMailed = directMailJobs.some(dm => dm.status === 'Mailed');
+      if (allMailed) {
+        derivedStatus = 'completed';
+      } else if (anyMailed) {
+        derivedStatus = 'in_progress';
+      } else {
+        // Use the DM job status directly
+        derivedStatus = directMailJobs[0].status?.toLowerCase().replace(/\s+/g, '_') || 'pending';
+      }
+    }
+
     // Get linked proofs
     const proofIds = getLinkedIds(order.Proofs);
     const proofs = proofIds.map(pId => proofMap.get(pId)).filter(Boolean) as FullProof[];
@@ -879,7 +894,7 @@ export async function getEnrichedOrders(): Promise<FullOrder[]> {
       market: getStr(order.market),
       office_location: getStr(order.office_location),
       order_office_location: getStr(order.order_office_location),
-      status: getStr(order.status) || 'pending',
+      status: derivedStatus,
       proof_status: getStr(order.proof_status),
       proof_feedback: getStr(order.proof_feedback),
       proof_approved_at: getStr(order.proof_approved_at),

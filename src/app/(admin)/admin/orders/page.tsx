@@ -31,10 +31,14 @@ interface Order {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-  completed: { label: 'Completed', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-  ready: { label: 'Ready', color: 'text-blue-400', bg: 'bg-blue-500/10' },
+  // From Direct_Mail_Jobs
+  completed: { label: 'Mailed', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  mailed: { label: 'Mailed', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  pending_list: { label: 'Pending List', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  in_progress: { label: 'In Progress', color: 'text-blue-400', bg: 'bg-blue-500/10' },
+  at_printer: { label: 'At Printer', color: 'text-violet-400', bg: 'bg-violet-500/10' },
+  // Legacy
   pending: { label: 'Pending', color: 'text-amber-400', bg: 'bg-amber-500/10' },
-  pending_details: { label: 'Pending', color: 'text-amber-400', bg: 'bg-amber-500/10' },
   not_started: { label: 'Not Started', color: 'text-zinc-400', bg: 'bg-zinc-500/10' },
 };
 
