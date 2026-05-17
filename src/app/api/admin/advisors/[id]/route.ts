@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAdvisor, getOrdersForAdvisor, getOrders } from '@/lib/airtable';
+import { getEnrichedAdvisor } from '@/lib/airtable';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -10,9 +10,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    
-    // Get advisor from Airtable
-    const advisor = await getAdvisor(id);
+    const advisor = await getEnrichedAdvisor(id);
     
     if (!advisor) {
       return NextResponse.json(
@@ -21,39 +19,22 @@ export async function GET(
       );
     }
     
-    // Get orders for this advisor
-    const orders = await getOrdersForAdvisor(advisor.advisor_name);
-    
-    // Calculate stats
-    const activeOrders = orders.filter(o => 
+    // Calculate stats from linked orders
+    const activeOrders = advisor.orders.filter(o => 
       !o.isPast && o.status !== 'completed' && o.status !== 'cancelled'
     );
-    const pastOrders = orders.filter(o => 
+    const pastOrders = advisor.orders.filter(o => 
       o.isPast || o.status === 'completed'
     );
-    const totalMailQuantity = orders.reduce((sum, o) => sum + o.mailing_quantity, 0);
-    
-    // Transform orders for response
-    const transformedOrders = orders.map(o => ({
-      id: o.id,
-      order_number: o.order_number,
-      first_event_date: o.first_event_date,
-      venue_name: o.venue_name,
-      class_type: o.class_type,
-      mailing_quantity: o.mailing_quantity,
-      status: o.status,
-      daysUntil: o.daysUntilEvent,
-      isPast: o.isPast,
-    }));
     
     return NextResponse.json({
       advisor,
-      orders: transformedOrders,
+      orders: advisor.orders,
       stats: {
         activeOrders: activeOrders.length,
         pastOrders: pastOrders.length,
-        totalOrders: orders.length,
-        totalMailQuantity,
+        totalOrders: advisor.orders.length,
+        totalMailQuantity: advisor.totalMailQuantity,
       },
     });
   } catch (error: any) {
