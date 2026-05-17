@@ -493,8 +493,8 @@ export interface FullOrder {
 function buildFullGroup(g: any, db: FullDatabase): FullGroup {
   const advisorIds = getLinkedIds(g.Clients || g.Advisors);
   const orderIds = getLinkedIds(g.Orders);
-  const venueIds = getLinkedIds(g.Venues).concat(getLinkedIds(g['Venues 2']));
-  const charityIds = getLinkedIds(g.Charities).concat(getLinkedIds(g['Charities 2']));
+  const venueIds = [...new Set(getLinkedIds(g.Venues).concat(getLinkedIds(g['Venues 2'])))];
+  const charityIds = [...new Set(getLinkedIds(g.Charities).concat(getLinkedIds(g['Charities 2'])))];
   const regionIds = getLinkedIds(g.Regions);
   
   // Count active orders
@@ -557,7 +557,7 @@ function buildFullCharity(c: any): FullCharity {
     regionIds: getLinkedIds(c.Region),
     orderIds: getLinkedIds(c.Orders),
     clientIds: getLinkedIds(c.Clients),
-    groupIds: getLinkedIds(c.Groups).concat(getLinkedIds(c.Group)),
+    groupIds: [...new Set(getLinkedIds(c.Groups).concat(getLinkedIds(c.Group)))],
   };
 }
 
@@ -577,7 +577,7 @@ function buildFullVenue(v: any): FullVenue {
     parking_notes: getStr(v['Parking Notes']),
     regionIds: getLinkedIds(v.Region),
     clientIds: getLinkedIds(v.Clients),
-    groupIds: getLinkedIds(v.Groups).concat(getLinkedIds(v.Group)),
+    groupIds: [...new Set(getLinkedIds(v.Groups).concat(getLinkedIds(v.Group)))],
   };
 }
 
@@ -608,7 +608,7 @@ function buildFullDigitalJob(dj: any): FullDigitalJob {
     disclaimer: getStr(dj.disclaimer),
     ethnicity_notes: getStr(dj.ethnicity_notes),
     status_text: getStr(dj.status_text),
-    orderIds: getLinkedIds(dj.order).concat(getLinkedIds(dj.Orders)),
+    orderIds: [...new Set(getLinkedIds(dj.order).concat(getLinkedIds(dj.Orders)))],
     clientIds: getLinkedIds(dj.client),
     directMailJobIds: getLinkedIds(dj.Direct_Mail_Jobs),
     groupIds: getLinkedIds(dj.Group),
@@ -690,7 +690,7 @@ function buildFullInvoice(inv: any): FullInvoice {
     total_invoice: getNum(inv.total_invoice),
     mailer_type: getStr(inv.mailer_type),
     venue_info: getStr(inv.venue_info),
-    orderIds: getLinkedIds(inv.order).concat(getLinkedIds(inv.Orders)),
+    orderIds: [...new Set(getLinkedIds(inv.order).concat(getLinkedIds(inv.Orders)))],
     clientIds: getLinkedIds(inv.client),
     groupIds: getLinkedIds(inv.Group),
   };
@@ -869,7 +869,7 @@ export async function getEnrichedOrders(): Promise<FullOrder[]> {
     const proofs = proofIds.map(pId => proofMap.get(pId)).filter(Boolean) as FullProof[];
 
     // Get linked invoices
-    const invIds = getLinkedIds(order.Invoices).concat(getLinkedIds(order['Invoices 2']));
+    const invIds = [...new Set(getLinkedIds(order.Invoices).concat(getLinkedIds(order['Invoices 2'])))];
     const invoices = invIds.map(iId => invoiceMap.get(iId)).filter(Boolean) as FullInvoice[];
 
     enrichedOrders.push({
@@ -984,7 +984,7 @@ export async function getEnrichedAdvisors(): Promise<FullAdvisor[]> {
     const group = groupIds.length > 0 ? groupMap.get(groupIds[0]) || null : null;
 
     // Get linked orders and build simplified order list
-    const orderIds = getLinkedIds(adv.Orders).concat(getLinkedIds(adv['Orders 2']));
+    const orderIds = [...new Set(getLinkedIds(adv.Orders).concat(getLinkedIds(adv['Orders 2'])))];
     const orders: FullOrder[] = [];
     let totalMailQty = 0;
     let activeCount = 0;
