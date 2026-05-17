@@ -286,10 +286,27 @@ node scripts/verify.js
 
 ---
 
-## Known Issues
+## Known Issues / Data Problems
 
-1. **16 orphaned orders** - No group in source data, shown as "Unknown"
-2. **Some orders missing office_location** - Need manual region assignment
+### Orphaned Orders (No Group)
+**8 advisors** have no group link in Airtable:
+- Corey Cyr, Angelica Roxas, Matthew Dunn, Sean O'Toole
+- Grant Frederick, Ed Guanill, Justin Yoo, Damian Sylvia
+
+**Fix:** Link these advisors to a group in Airtable > Advisors table > `group` field
+
+### Status Mapping
+Direct_Mail_Jobs.status → Dashboard status:
+- `Pending List` → "Pending Details"
+- `Mailed` → "Order Completed"
+- Empty/other → "Not Started"
+
+### FTA Offices Showing as Separate Groups
+Some FTA offices (FTA NSV, FTA TX) appear separately because:
+- Their `group_name` field is "FTA NSV" instead of "FTA"
+- They ARE linked to the main FTA group, but we display `group_name` first
+
+**Fix:** Update `group_name` field on these advisor records to "FTA"
 
 ---
 
