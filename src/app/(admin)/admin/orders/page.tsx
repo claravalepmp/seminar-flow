@@ -15,6 +15,7 @@ interface Order {
   order_number: number;
   advisor: string;
   group_name: string;
+  office_location: string;
   first_event_date: string | null;
   second_event_date: string | null;
   venue_name: string;
@@ -28,6 +29,8 @@ interface Order {
   status: string;
   daysUntilEvent: number | null;
   isPast: boolean;
+  isUrgent: boolean;
+  weeksOut: number | null;
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
@@ -229,10 +232,10 @@ export default function OrdersPage() {
               </th>
               <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Order</th>
               <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Advisor</th>
-              <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Date</th>
+              <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Region</th>
+              <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Event Date</th>
               <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Venue</th>
-              <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Status</th>
-              <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Days</th>
+              <th className="text-left px-3 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Weeks</th>
               <th className="w-20 px-3 py-3"></th>
             </tr>
           </thead>
@@ -287,6 +290,14 @@ export default function OrdersPage() {
                       </div>
                     </td>
                     <td className="px-3 py-3">
+                      <span className={cn(
+                        'text-xs font-medium px-2 py-1 rounded-full',
+                        order.office_location ? 'bg-indigo-500/10 text-indigo-400' : 'bg-zinc-700/50 text-zinc-500'
+                      )}>
+                        {order.office_location || '—'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3">
                       <span className="text-sm text-zinc-400">{formatDate(order.first_event_date)}</span>
                     </td>
                     <td className="px-3 py-3">
@@ -295,13 +306,13 @@ export default function OrdersPage() {
                       </span>
                     </td>
                     <td className="px-3 py-3">
-                      <span className={cn('text-[11px] font-medium px-2 py-1 rounded-full', config.bg, config.color)}>
-                        {config.label}
-                      </span>
-                    </td>
-                    <td className="px-3 py-3">
-                      <span className={cn('text-sm font-medium', urgencyColor)}>
-                        {order.daysUntilEvent !== null ? (order.isPast ? 'Past' : `${order.daysUntilEvent}d`) : '—'}
+                      <span className={cn(
+                        'text-sm font-semibold',
+                        order.weeksOut !== null && order.weeksOut <= 4 ? 'text-rose-400' :
+                        order.weeksOut !== null && order.weeksOut <= 6 ? 'text-amber-400' :
+                        'text-zinc-500'
+                      )}>
+                        {order.weeksOut !== null ? `${order.weeksOut}w` : '—'}
                       </span>
                     </td>
                     <td className="px-3 py-3">

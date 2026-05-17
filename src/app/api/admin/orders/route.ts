@@ -12,12 +12,27 @@ export async function GET(request: Request) {
     
     let orders = await getEnrichedOrders();
     
-    // Filter based on params
+    // Add weeksOut calculation
+    orders = orders.map(o => {
+      const weeksOut = o.daysUntilEvent !== null ? Math.ceil(o.daysUntilEvent / 7) : null;
+      return { ...o, weeksOut };
+    });
+    
+    // Default: only show upcoming active orders (not past, not completed)
     if (!includePast && !includeCompleted) {
       orders = orders.filter(o => 
-        !o.isPast && o.status !== 'completed' && o.status !== 'cancelled'
+        !o.isPast && 
+        o.status !== 'completed' && 
+        o.status !== 'cancelled'
       );
     }
+    
+    // Sort by weeks out (nearest first)
+    orders.sort((a, b) => {
+      const aWeeks = a.weeksOut ?? 999;
+      const bWeeks = b.weeksOut ?? 999;
+      return aWeeks - bWeeks;
+    });
     
     return NextResponse.json({
       orders,
