@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { 
   ArrowLeft, User, Building2, Mail, Phone, Calendar,
   FileText, AlertCircle, ChevronRight, CheckCircle2, 
-  Clock, Plus, Send, MoreHorizontal, Edit3, ExternalLink
+  Clock, Plus, Send, MoreHorizontal, Edit3, ExternalLink,
+  MapPin, Heart, DollarSign, Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -15,24 +16,67 @@ interface Advisor {
   advisor_name: string;
   group_name: string;
   business_name: string;
+  business_website: string;
+  business_address: string;
+  business_city: string;
+  business_state: string;
+  mailer_return_address: string;
+  registration_phone: string;
+  website_registration_direct: string;
+  website_registration_digital: string;
+  main_contact_name: string;
   main_contact_email: string;
   main_contact_phone: string;
-  main_contact_name: string;
-  registration_phone: string;
+  secondary_contact_name: string;
+  secondary_contact_email: string;
+  cc_emails: string;
   usual_mailing_quantity: number;
   default_digital_budget: number;
-}
-
-interface Order {
-  id: string;
-  order_number: number;
-  first_event_date: string | null;
-  venue_name: string;
-  class_type: string;
-  mailing_quantity: number;
-  status: string;
-  daysUntil: number | null;
-  isPast: boolean;
+  direct_mailer_rate: number;
+  order_instructions: string;
+  client_notes: string;
+  ein: string;
+  disclaimer: string;
+  preferred_mailer_topics: string;
+  mailer_type_used: string;
+  direct_mail_discounts: string;
+  start_orders_before_paid: boolean;
+  non_profit_status: boolean;
+  group_data: {
+    id: string;
+    name: string;
+    website: string;
+    registration_phone: string;
+    registration_url: string;
+    address: string;
+    responsibility: string;
+  } | null;
+  orderCount: number;
+  activeOrderCount: number;
+  totalMailQuantity: number;
+  orders: Array<{
+    id: string;
+    order_number: number;
+    first_event_date: string | null;
+    venue_name: string;
+    class_type: string;
+    mailing_quantity: number;
+    status: string;
+    daysUntil: number | null;
+    isPast: boolean;
+  }>;
+  venues: Array<{
+    id: string;
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+  }>;
+  charities: Array<{
+    id: string;
+    name: string;
+    short_name: string;
+  }>;
 }
 
 interface Stats {
@@ -45,7 +89,6 @@ interface Stats {
 export default function AdvisorDetailPage() {
   const params = useParams();
   const [advisor, setAdvisor] = useState<Advisor | null>(null);
-  const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +109,6 @@ export default function AdvisorDetailPage() {
       }
       const data = await res.json();
       setAdvisor(data.advisor);
-      setOrders(data.orders || []);
       setStats(data.stats);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load');
@@ -102,7 +144,8 @@ export default function AdvisorDetailPage() {
     );
   }
 
-  const activeOrders = orders.filter(o => !o.isPast && o.status !== 'completed');
+  const orders = advisor.orders || [];
+  const activeOrders = orders.filter(o => !o.isPast && o.status !== 'completed' && o.status !== 'cancelled');
   const pastOrders = orders.filter(o => o.isPast || o.status === 'completed');
   const displayOrders = activeTab === 'upcoming' ? activeOrders : pastOrders;
 
@@ -122,7 +165,7 @@ export default function AdvisorDetailPage() {
             </div>
             <div>
               <h1 className="text-lg font-semibold text-zinc-100">{advisor.advisor_name}</h1>
-              <p className="text-sm text-zinc-500">{advisor.group_name}</p>
+              <p className="text-sm text-zinc-500">{advisor.group_name} • {advisor.business_name}</p>
             </div>
           </div>
         </div>
@@ -136,7 +179,7 @@ export default function AdvisorDetailPage() {
             New Order
           </button>
           <button className="p-2 hover:bg-zinc-800 border border-zinc-800 rounded-lg transition">
-            <MoreHorizontal className="w-4 h-4 text-zinc-500" />
+            <Edit3 className="w-4 h-4 text-zinc-500" />
           </button>
         </div>
       </div>
@@ -154,7 +197,6 @@ export default function AdvisorDetailPage() {
 
           {/* Orders */}
           <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl overflow-hidden">
-            {/* Tabs */}
             <div className="flex border-b border-zinc-800/50">
               <button
                 onClick={() => setActiveTab('upcoming')}
@@ -180,7 +222,6 @@ export default function AdvisorDetailPage() {
               </button>
             </div>
 
-            {/* Orders List */}
             {displayOrders.length === 0 ? (
               <div className="p-8 text-center">
                 <FileText className="w-10 h-10 text-zinc-700 mx-auto mb-2" />
@@ -212,6 +253,11 @@ export default function AdvisorDetailPage() {
                                 {order.class_type}
                               </span>
                             )}
+                            {order.mailing_quantity > 0 && (
+                              <span className="text-[10px] text-zinc-500">
+                                {(order.mailing_quantity / 1000).toFixed(0)}k mail
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -232,6 +278,41 @@ export default function AdvisorDetailPage() {
               </div>
             )}
           </div>
+
+          {/* Venues */}
+          {advisor.venues && advisor.venues.length > 0 && (
+            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-zinc-800/50 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-zinc-500" />
+                <h3 className="text-sm font-medium text-zinc-300">Venues ({advisor.venues.length})</h3>
+              </div>
+              <div className="divide-y divide-zinc-800/50">
+                {advisor.venues.map(venue => (
+                  <div key={venue.id} className="px-4 py-3">
+                    <p className="text-sm text-zinc-200">{venue.name}</p>
+                    <p className="text-xs text-zinc-500">{venue.address}, {venue.city}, {venue.state}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Charities */}
+          {advisor.charities && advisor.charities.length > 0 && (
+            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-zinc-800/50 flex items-center gap-2">
+                <Heart className="w-4 h-4 text-rose-400" />
+                <h3 className="text-sm font-medium text-zinc-300">Charities ({advisor.charities.length})</h3>
+              </div>
+              <div className="p-4 flex flex-wrap gap-2">
+                {advisor.charities.map(charity => (
+                  <span key={charity.id} className="text-xs px-2 py-1 bg-rose-500/10 text-rose-400 rounded-full">
+                    {charity.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sidebar */}
@@ -270,8 +351,39 @@ export default function AdvisorDetailPage() {
               {advisor.registration_phone && (
                 <ContactItem icon={Phone} label="Registration" value={advisor.registration_phone} />
               )}
+              {advisor.business_website && (
+                <ContactItem 
+                  icon={Globe} 
+                  label="Website" 
+                  value={advisor.business_website}
+                  href={advisor.business_website}
+                />
+              )}
+              {advisor.mailer_return_address && (
+                <div className="pt-2 border-t border-zinc-800/50">
+                  <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Return Address</p>
+                  <p className="text-xs text-zinc-400 whitespace-pre-line">{advisor.mailer_return_address}</p>
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Secondary Contact */}
+          {advisor.secondary_contact_name && (
+            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-zinc-800/50">
+                <h3 className="text-sm font-medium text-zinc-300">Secondary Contact</h3>
+              </div>
+              <div className="p-4 space-y-2">
+                <p className="text-sm text-zinc-200">{advisor.secondary_contact_name}</p>
+                {advisor.secondary_contact_email && (
+                  <a href={`mailto:${advisor.secondary_contact_email}`} className="text-xs text-indigo-400 hover:underline block">
+                    {advisor.secondary_contact_email}
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Defaults */}
           <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl overflow-hidden">
@@ -297,8 +409,76 @@ export default function AdvisorDetailPage() {
                   }
                 </span>
               </div>
+              <div className="flex justify-between">
+                <span className="text-xs text-zinc-500">Mailer Rate</span>
+                <span className="text-sm text-zinc-200">
+                  {advisor.direct_mailer_rate > 0 
+                    ? `$${advisor.direct_mailer_rate.toFixed(2)}`
+                    : '—'
+                  }
+                </span>
+              </div>
+              {advisor.mailer_type_used && (
+                <div className="flex justify-between">
+                  <span className="text-xs text-zinc-500">Mailer Type</span>
+                  <span className="text-sm text-zinc-200">{advisor.mailer_type_used}</span>
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Group Info */}
+          {advisor.group_data && (
+            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-zinc-800/50">
+                <h3 className="text-sm font-medium text-zinc-300 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-zinc-500" />
+                  Group
+                </h3>
+              </div>
+              <div className="p-4 space-y-2">
+                <p className="text-sm font-medium text-white">{advisor.group_data.name}</p>
+                {advisor.group_data.registration_phone && (
+                  <p className="text-xs text-zinc-500 flex items-center gap-1">
+                    <Phone className="w-3 h-3" />
+                    {advisor.group_data.registration_phone}
+                  </p>
+                )}
+                {advisor.group_data.registration_url && (
+                  <a href={advisor.group_data.registration_url} target="_blank" className="text-xs text-indigo-400 hover:underline flex items-center gap-1">
+                    <ExternalLink className="w-3 h-3" />
+                    Registration URL
+                  </a>
+                )}
+                {advisor.group_data.responsibility && (
+                  <p className="text-xs text-zinc-500">Responsibility: {advisor.group_data.responsibility}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Notes */}
+          {(advisor.order_instructions || advisor.client_notes) && (
+            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-zinc-800/50">
+                <h3 className="text-sm font-medium text-zinc-300">Notes</h3>
+              </div>
+              <div className="p-4 space-y-3">
+                {advisor.order_instructions && (
+                  <div>
+                    <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Order Instructions</p>
+                    <p className="text-xs text-zinc-400 whitespace-pre-line">{advisor.order_instructions}</p>
+                  </div>
+                )}
+                {advisor.client_notes && (
+                  <div>
+                    <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Client Notes</p>
+                    <p className="text-xs text-zinc-400 whitespace-pre-line">{advisor.client_notes}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -349,7 +529,7 @@ function ContactItem({
 
   if (href) {
     return (
-      <a href={href} className="flex items-center gap-2.5 hover:bg-zinc-800/50 -mx-2 px-2 py-1 rounded-lg transition">
+      <a href={href} target={href.startsWith('http') ? '_blank' : undefined} className="flex items-center gap-2.5 hover:bg-zinc-800/50 -mx-2 px-2 py-1 rounded-lg transition">
         {content}
       </a>
     );
