@@ -59,13 +59,13 @@ interface Stats {
   groups: string[];
 }
 
-// Status config
+// Status config - maps DM job status to display
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: typeof Clock }> = {
-  'Not Started': { label: 'Not Started', color: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-500/30', icon: Clock },
-  'Pending Details': { label: 'Pending Details', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30', icon: AlertTriangle },
-  'All Details Added': { label: 'Ready to Send', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', icon: CheckCircle2 },
-  'Order Completed': { label: 'Completed', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/30', icon: CheckCircle2 },
-  'Order Canceled': { label: 'Canceled', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/30', icon: XCircle },
+  'Not Started': { label: 'Needs Setup', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/30', icon: AlertTriangle },
+  'Pending Details': { label: 'In Progress', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30', icon: Clock },
+  'All Details Added': { label: 'Ready', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', icon: CheckCircle2 },
+  'Order Completed': { label: 'Mailed', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/30', icon: CheckCircle2 },
+  'Order Canceled': { label: 'Canceled', color: 'text-zinc-400', bg: 'bg-zinc-500/10', border: 'border-zinc-500/30', icon: XCircle },
   'Issues': { label: 'Issues', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/30', icon: AlertTriangle },
 };
 
@@ -154,7 +154,14 @@ function OrderCard({ order }: { order: Order }) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="font-bold text-white text-lg truncate">{order.advisor}</p>
-              <p className="text-sm text-zinc-500 truncate">{order.groupName || 'No Group'}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-sm text-zinc-500 truncate">{order.groupName || 'Unassigned'}</span>
+                {order.officeLocation && (
+                  <span className="text-xs text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded">
+                    {order.officeLocation}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           
