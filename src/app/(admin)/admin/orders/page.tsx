@@ -34,9 +34,10 @@ interface Order {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-  active: { label: 'Active', color: 'text-blue-400', bg: 'bg-blue-500/10' },
-  in_progress: { label: 'In Progress', color: 'text-amber-400', bg: 'bg-amber-500/10' },
-  completed: { label: 'Mailed', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  'Not Started': { label: 'Needs Setup', color: 'text-rose-400', bg: 'bg-rose-500/10' },
+  'Pending Details': { label: 'In Progress', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  'All Details Added': { label: 'Ready', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  'Order Completed': { label: 'Mailed', color: 'text-blue-400', bg: 'bg-blue-500/10' },
 };
 
 export default function OrdersPage() {
@@ -44,10 +45,14 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
+  const [group, setGroup] = useState('all');
   const [sort, setSort] = useState('date_asc');
   const [includePast, setIncludePast] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  
+  // Get unique groups
+  const groups = [...new Set(orders.map(o => o.group_name).filter(Boolean))].sort();
 
   useEffect(() => {
     loadOrders();
@@ -180,7 +185,7 @@ export default function OrdersPage() {
         </div>
 
         <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-lg p-0.5">
-          {['all', 'active', 'completed'].map((s) => (
+          {['all', 'Pending Details', 'Order Completed'].map((s) => (
             <button
               key={s}
               onClick={() => setStatus(s)}
