@@ -12,12 +12,6 @@ export async function GET(request: Request) {
     
     let orders = await getEnrichedOrders();
     
-    // Add weeksOut calculation
-    orders = orders.map(o => {
-      const weeksOut = o.daysUntilEvent !== null ? Math.ceil(o.daysUntilEvent / 7) : null;
-      return { ...o, weeksOut };
-    });
-    
     // Default: only show upcoming active orders (not past, not completed)
     if (!includePast && !includeCompleted) {
       orders = orders.filter(o => 
@@ -27,16 +21,40 @@ export async function GET(request: Request) {
       );
     }
     
-    // Sort by weeks out (nearest first)
+    // Sort by days until event (nearest first)
     orders.sort((a, b) => {
-      const aWeeks = a.weeksOut ?? 999;
-      const bWeeks = b.weeksOut ?? 999;
-      return aWeeks - bWeeks;
+      const aDays = a.daysUntilEvent ?? 999;
+      const bDays = b.daysUntilEvent ?? 999;
+      return aDays - bDays;
     });
     
+    // Return only essential fields for list view
+    const lightOrders = orders.map(o => ({
+      id: o.id,
+      order_number: o.order_number,
+      advisor: o.advisor,
+      group_name: o.group_name,
+      office_location: o.office_location,
+      first_event_date: o.first_event_date,
+      second_event_date: o.second_event_date,
+      venue_name: o.venue_name,
+      venue_address: o.venue_address,
+      start_time: o.start_time,
+      end_time: o.end_time,
+      charity: o.charity,
+      landing_page_url: o.landing_page_url,
+      class_type: o.class_type,
+      mailing_quantity: o.mailing_quantity,
+      status: o.status,
+      daysUntilEvent: o.daysUntilEvent,
+      isPast: o.isPast,
+      isUrgent: o.isUrgent || false,
+      weeksOut: o.daysUntilEvent !== null ? Math.ceil(o.daysUntilEvent / 7) : null,
+    }));
+    
     return NextResponse.json({
-      orders,
-      count: orders.length,
+      orders: lightOrders,
+      count: lightOrders.length,
     });
   } catch (error: any) {
     console.error('Error fetching orders from Airtable:', error);

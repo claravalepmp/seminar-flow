@@ -180,7 +180,7 @@ export default function OrdersPage() {
         </div>
 
         <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-lg p-0.5">
-          {['all', 'not_started', 'pending', 'ready', 'completed'].map((s) => (
+          {['all', 'active', 'completed'].map((s) => (
             <button
               key={s}
               onClick={() => setStatus(s)}
