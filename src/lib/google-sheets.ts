@@ -18,6 +18,38 @@ const STATUS_CATEGORIES: Record<string, string> = {
   'Issues': 'issues',
 };
 
+// Normalize FTA advisor names to regions
+function normalizeFTAAdvisor(advisor: string, group: string): string {
+  const name = advisor.trim();
+  const lowerName = name.toLowerCase();
+  
+  // Only normalize if it's an FTA-related entry
+  if (!lowerName.includes('fta') && !group.toLowerCase().includes('fta')) {
+    return name;
+  }
+  
+  // Map variations to standard region names
+  if (lowerName.includes('dallas') || lowerName === 'fta tx' || lowerName === 'dallas') {
+    return 'FTA Dallas';
+  }
+  if (lowerName.includes('chicago') || lowerName === 'chicago') {
+    return 'FTA Chicago';
+  }
+  if (lowerName.includes('stl') || lowerName.includes('st. louis') || lowerName.includes('st louis')) {
+    return 'FTA St. Louis';
+  }
+  if (lowerName.includes('nashville') || lowerName === 'fta nsv') {
+    return 'FTA Nashville';
+  }
+  
+  // Return original if no match but has FTA
+  if (lowerName.startsWith('fta')) {
+    return name;
+  }
+  
+  return name;
+}
+
 export interface Order {
   id: string;
   orderNumber: number;
@@ -47,6 +79,7 @@ export interface Order {
   // Mail details
   mailingQuantity: number;
   mailerType: string;
+  mailerReturnAddress: string;
   // URLs & Contact
   landingPageUrl: string;
   registrationPhone: string;
@@ -210,13 +243,16 @@ export async function getOrdersWithDeadlines(): Promise<Order[]> {
     const isPast = daysUntilEventVal !== null && daysUntilEventVal < 0;
     const isUrgent = !isPast && daysUntilEventVal !== null && daysUntilEventVal <= 7;
     
+    const rawAdvisor = (row[4] || '').trim();
+    const rawGroup = (row[5] || '').trim();
+    
     orders.push({
       id: `dm-${orderNumber}`,
       orderNumber,
       status: primaryStatus,
       statusCategory,
-      advisor: (row[4] || '').trim(),
-      groupName: (row[5] || '').trim(),
+      advisor: normalizeFTAAdvisor(rawAdvisor, rawGroup),
+      groupName: rawGroup,
       officeLocation: (row[11] || '').trim(),
       market: (row[10] || '').trim(),
       firstEventDate: row[6]?.trim() || null,
@@ -234,6 +270,7 @@ export async function getOrdersWithDeadlines(): Promise<Order[]> {
       notes: (row[24] || '').trim(),
       mailingQuantity: parseNum(row[14]),
       mailerType: (row[15] || '').trim(),
+      mailerReturnAddress: (row[16] || '').trim(),
       landingPageUrl: (row[18] || row[19] || '').trim(),
       registrationPhone,
       clientApprovalDeadline,

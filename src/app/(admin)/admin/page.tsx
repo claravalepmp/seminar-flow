@@ -33,6 +33,7 @@ interface Order {
   classType: string;
   mailingQuantity: number;
   mailerType: string;
+  mailerReturnAddress: string;
   landingPageUrl: string;
   registrationPhone: string;
   clientApprovalDeadline: string | null;
@@ -96,6 +97,7 @@ function OrderCard({ order }: { order: Order }) {
   // {charity}
   // {landing_page}
   // {phone}
+  // {return_address}
   const copyLines = [
     `${order.advisor} / #${order.orderNumber}`,
     ...eventDates,
@@ -105,6 +107,7 @@ function OrderCard({ order }: { order: Order }) {
     order.charity,
     order.landingPageUrl,
     order.registrationPhone,
+    order.mailerReturnAddress,
   ].filter(line => line?.trim());
   
   const copyText = copyLines.join('\n');
@@ -230,6 +233,14 @@ function OrderCard({ order }: { order: Order }) {
           <div className="flex items-center gap-3">
             <Heart className="w-4 h-4 text-pink-400 shrink-0" />
             <p className="text-sm text-zinc-400">{order.charity}</p>
+          </div>
+        )}
+        
+        {/* Return Address */}
+        {order.mailerReturnAddress && (
+          <div className="flex items-start gap-3">
+            <Mail className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+            <p className="text-sm text-zinc-400 whitespace-pre-line">{order.mailerReturnAddress}</p>
           </div>
         )}
         

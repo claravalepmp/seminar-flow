@@ -30,6 +30,7 @@ interface Order {
   charity: string;
   classType: string;
   mailingQuantity: number;
+  mailerReturnAddress: string;
   landingPageUrl: string;
   registrationPhone: string;
   clientApprovalDeadline: string | null;
@@ -82,6 +83,7 @@ function OrderCard({ order }: { order: Order }) {
     order.charity,
     order.landingPageUrl,
     order.registrationPhone,
+    order.mailerReturnAddress,
   ].filter(line => line?.trim());
   
   const copyText = copyLines.join('\n');
