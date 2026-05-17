@@ -98,7 +98,7 @@ export interface FullDatabase {
 
 let cachedDb: FullDatabase | null = null;
 let cacheTime = 0;
-const CACHE_TTL = 30000; // 30 seconds
+const CACHE_TTL = 5000; // 5 seconds for dev
 
 export async function loadFullDatabase(): Promise<FullDatabase> {
   const now = Date.now();
@@ -1157,11 +1157,12 @@ export async function getOrderStats() {
     byStatus[o.status] = (byStatus[o.status] || 0) + 1;
   });
 
-  const groupStats: Record<string, { active: number; past: number; urgent: number; totalMail: number }> = {};
+  const groupStats: Record<string, { active: number; past: number; urgent: number; totalMail: number; regions: number; charities: number }> = {};
   orders.forEach(o => {
-    const group = o.group_name || 'Unknown';
+    // Use linked group name, fall back to text field
+    const group = o.group_data?.name || o.group_name || 'Unknown';
     if (!groupStats[group]) {
-      groupStats[group] = { active: 0, past: 0, urgent: 0, totalMail: 0 };
+      groupStats[group] = { active: 0, past: 0, urgent: 0, totalMail: 0, regions: 0, charities: 0 };
     }
     if (!o.isPast && o.status !== 'completed' && o.status !== 'cancelled') {
       groupStats[group].active++;
@@ -1173,6 +1174,14 @@ export async function getOrderStats() {
       groupStats[group].urgent++;
     }
     groupStats[group].totalMail += o.mailing_quantity;
+  });
+
+  // Add region/charity counts from groups
+  groups.forEach(g => {
+    if (groupStats[g.name]) {
+      groupStats[g.name].regions = g.regionIds?.length || 0;
+      groupStats[g.name].charities = g.charityIds?.length || 0;
+    }
   });
 
   const byGroup = Object.entries(groupStats)
