@@ -548,11 +548,13 @@ export default function AdminDashboard() {
             active={viewFilter === 'active'}
           />
           <StatCard
-            title="Urgent"
-            value={stats?.urgentOrders || 0}
+            title="Needs Setup"
+            value={stats?.byStatus?.['Not Started'] || 0}
             icon={AlertTriangle}
             color="rose"
-            subtitle="Within 7 days"
+            subtitle="Action required"
+            onClick={() => { setStatusFilter('Not Started'); setViewFilter('active'); }}
+            active={statusFilter === 'Not Started'}
           />
           <StatCard
             title="Ready to Send"
