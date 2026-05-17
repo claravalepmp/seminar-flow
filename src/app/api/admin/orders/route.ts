@@ -88,9 +88,41 @@ export async function GET(request: Request) {
       };
     });
     
+    // Calculate stats for dashboard
+    const groups = [...new Set(lightOrders.map(o => o.groupName).filter(Boolean))].sort();
+    const byStatus: Record<string, number> = {};
+    const byGroup: { name: string; active: number; past: number; urgent: number; totalMail: number }[] = [];
+    
+    lightOrders.forEach(o => {
+      byStatus[o.status] = (byStatus[o.status] || 0) + 1;
+    });
+    
+    groups.forEach(g => {
+      const gOrders = lightOrders.filter(o => o.groupName === g);
+      byGroup.push({
+        name: g,
+        active: gOrders.filter(o => !o.isPast).length,
+        past: gOrders.filter(o => o.isPast).length,
+        urgent: gOrders.filter(o => o.isUrgent).length,
+        totalMail: gOrders.reduce((sum, o) => sum + (o.mailingQuantity || 0), 0),
+      });
+    });
+    
+    const stats = {
+      totalOrders: lightOrders.length,
+      activeOrders: lightOrders.filter(o => !o.isPast).length,
+      pastOrders: lightOrders.filter(o => o.isPast).length,
+      urgentOrders: lightOrders.filter(o => o.isUrgent).length,
+      totalMailPieces: lightOrders.reduce((sum, o) => sum + (o.mailingQuantity || 0), 0),
+      byStatus,
+      byGroup,
+      groups,
+    };
+    
     return NextResponse.json({
       orders: lightOrders,
       count: lightOrders.length,
+      stats,
     });
   } catch (error: any) {
     console.error('Error fetching orders from Airtable:', error);
