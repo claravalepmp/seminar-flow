@@ -1,0 +1,230 @@
+{
+  "groups": [
+    "FTA",
+    "Scout Financial Group",
+    "Bone Asset Management ",
+    "The O'Toole Group",
+    "Eagle Financial Solutions",
+    "Sentinel Asset Management (SAM RIA)",
+    "SAM RIA",
+    "Advanced Wealth Management",
+    "McGuire Insurance & Retirement Solutions",
+    "Advisormax",
+    "Kelly Capital Partners",
+    "Southern Illinois",
+    "Professional Group, Inc.",
+    "Bone Asset",
+    "SAM-RIA",
+    "FWM",
+    "The Otoole Group",
+    "Mason Street Wealth Management",
+    "FTA TX",
+    "Scout Financial"
+  ],
+  "advisors": [
+    {
+      "name": "FTA STL",
+      "group": "FTA",
+      "offices": [
+        "St. Louis",
+        " Rolling Meadows",
+        "Southern Illinois"
+      ]
+    },
+    {
+      "name": "Jason Smitka",
+      "group": "Scout Financial Group",
+      "offices": [
+        "Main",
+        "KS"
+      ]
+    },
+    {
+      "name": "Rick Bone",
+      "group": "Bone Asset Management ",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "FTA STL SS",
+      "group": "FTA",
+      "offices": [
+        "St. Louis"
+      ]
+    },
+    {
+      "name": "Sean Otoole",
+      "group": "The O'Toole Group",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "Alex Huey",
+      "group": "Eagle Financial Solutions",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "FTA Chicago",
+      "group": "FTA",
+      "offices": [
+        " Oak Brook ",
+        " Rolling Meadows",
+        "Oak Brook",
+        "Rolling Meadows",
+        "CHI"
+      ]
+    },
+    {
+      "name": "William Warner",
+      "group": "Sentinel Asset Management (SAM RIA)",
+      "offices": [
+        "CT",
+        "MD",
+        "PA"
+      ]
+    },
+    {
+      "name": "Catherine Loquet",
+      "group": "Advanced Wealth Management",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "Jared McGuire",
+      "group": "McGuire Insurance & Retirement Solutions",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "Sean Mason",
+      "group": "Advisormax",
+      "offices": [
+        "Main",
+        "CA"
+      ]
+    },
+    {
+      "name": "Andy Urso",
+      "group": "Advisormax",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "Damian Sylvia ",
+      "group": "Advisormax",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "Janie Kelly ",
+      "group": "Kelly Capital Partners",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "FTA STL - Southern Illinois",
+      "group": "FTA",
+      "offices": [
+        "Southern Illinois"
+      ]
+    },
+    {
+      "name": "FTA TX",
+      "group": "FTA",
+      "offices": [
+        "Dallas",
+        "TX"
+      ]
+    },
+    {
+      "name": "Janie Kelly",
+      "group": "Kelly Capital Partners",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "Damian Sylvia",
+      "group": "Advisormax",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "Sean Kenney",
+      "group": "FTA",
+      "offices": [
+        "STL"
+      ]
+    },
+    {
+      "name": "Alan Johnson",
+      "group": "Professional Group, Inc.",
+      "offices": [
+        "MD"
+      ]
+    },
+    {
+      "name": "FTA Nashville",
+      "group": "FTA",
+      "offices": [
+        "Nashville"
+      ]
+    },
+    {
+      "name": "Foguth Financial Group",
+      "group": "FWM",
+      "offices": [
+        "Main"
+      ]
+    },
+    {
+      "name": "FTA NSV",
+      "group": "FTA",
+      "offices": [
+        "Nashville",
+        "NSV"
+      ]
+    }
+  ],
+  "charities": [
+    "STL crisis",
+    "TOS",
+    "Glen ED",
+    "HCS",
+    "Glen-Ed Pantry",
+    "Crisis Nursery",
+    "HCS Family Services",
+    "Township of Schaumburg",
+    "North Texas Food Bank",
+    "Second Harvest"
+  ],
+  "classTypes": [
+    "R90",
+    "R101",
+    "SS101",
+    "W101",
+    "Taxes",
+    "Legacy Planning for your Retirement ",
+    "Taxes in Retirement",
+    "Wealth 101",
+    "T101"
+  ],
+  "statuses": [
+    "Order Sent",
+    "All Details Added",
+    "Proof Sent to Client",
+    "Issues"
+  ],
+  "orderCount": 205,
+  "clientCount": 39
+}

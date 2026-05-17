@@ -1,0 +1,211 @@
+{
+  "extracted_at": "2026-05-14",
+  "source": "Google Sheets - Main Order & Client Dictionary",
+  
+  "groups": [
+    {
+      "id": "fta",
+      "name": "FTA (Financial & Tax Architects)",
+      "website": "https://fta-ria.com/",
+      "offices": ["Dallas", "Rolling Meadows", "Oak Brook", "St. Louis", "Southern Illinois", "Nashville"],
+      "responsibility": "Cameron"
+    },
+    {
+      "id": "sam_ria",
+      "name": "Sentinel Asset Management (SAM RIA)",
+      "website": "https://sentinelassetmanagementllc.com/",
+      "offices": ["CT", "MD", "PA"],
+      "responsibility": "Cameron, Chad"
+    },
+    {
+      "id": "bone_asset",
+      "name": "Bone Asset Management",
+      "website": "https://www.boneasset.com/",
+      "offices": ["Michigan"],
+      "responsibility": "Chad"
+    },
+    {
+      "id": "eagle",
+      "name": "Eagle Financial Solutions",
+      "website": "https://eaglefinancialsolutions.com/",
+      "offices": ["Ohio"],
+      "responsibility": "Cameron"
+    },
+    {
+      "id": "scout",
+      "name": "Scout Financial Group",
+      "website": "https://www.scoutfinancialgroup.com/",
+      "offices": ["Kansas"],
+      "responsibility": "Cameron"
+    },
+    {
+      "id": "otoole",
+      "name": "The O'Toole Group",
+      "website": "https://www.theotoolegroup.com/",
+      "offices": ["Florida"],
+      "responsibility": "Cameron"
+    },
+    {
+      "id": "advisormax",
+      "name": "AdvisorMax",
+      "offices": ["Various"],
+      "responsibility": "Cameron/Chad"
+    },
+    {
+      "id": "advanced_wealth",
+      "name": "Advanced Wealth Management",
+      "offices": ["California"],
+      "responsibility": "Cameron"
+    },
+    {
+      "id": "kelly",
+      "name": "Kelly Capital Partners",
+      "offices": ["Michigan"],
+      "responsibility": "Cameron"
+    },
+    {
+      "id": "mcguire",
+      "name": "McGuire Insurance & Retirement Solutions",
+      "website": "http://www.mcguireretire.com",
+      "offices": ["San Diego"],
+      "responsibility": "Chad"
+    }
+  ],
+
+  "advisors": [
+    {
+      "name": "FTA Dallas",
+      "group_id": "fta",
+      "office": "Dallas",
+      "phone": "(469) 916-2591",
+      "address": "6860 Dallas Pkwy #200, Plano, TX 75024"
+    },
+    {
+      "name": "FTA Chicago",
+      "group_id": "fta",
+      "office": "Rolling Meadows",
+      "phone": "(847) 994-3538",
+      "address": "1600 Golf Rd, Rolling Meadows IL 60008"
+    },
+    {
+      "name": "FTA Chicago Oak Brook",
+      "group_id": "fta", 
+      "office": "Oak Brook",
+      "phone": "(630) 556-8872",
+      "address": "1415 West 22nd Street, Oak Brook, IL 60523"
+    },
+    {
+      "name": "FTA STL",
+      "group_id": "fta",
+      "office": "St. Louis",
+      "phone": "(314) 579-3655",
+      "advisors": ["Scott Peterson", "Sean Kenney", "Mark Kukielski"],
+      "address": "12412 Powerscourt Drive, #25, St. Louis, MO 63131"
+    },
+    {
+      "name": "FTA STL SS",
+      "group_id": "fta",
+      "office": "St. Louis",
+      "phone": "(314) 350-6650",
+      "advisors": ["Jordan Blanton"],
+      "class_types": ["SS101"]
+    },
+    {
+      "name": "FTA STL - Southern Illinois",
+      "group_id": "fta",
+      "office": "Southern Illinois",
+      "phone": "(618) 702-4274",
+      "advisors": ["Anthony Gitcho"],
+      "address": "110B Rottingham Ct, Edwardsville, IL 62025"
+    },
+    {
+      "name": "William Warner",
+      "group_id": "sam_ria",
+      "offices": ["CT", "MD", "PA"],
+      "phones": {
+        "CT": "(203) area",
+        "MD": "(301) 973-6855",
+        "PA": "(610) 890-6857"
+      },
+      "addresses": {
+        "CT": "1062 Barnes Rd. Suite 202, Wallingford, CT 06492",
+        "MD": "8115 Maple Lawn Blvd. Suite 230, Fulton, MD 20759",
+        "PA": "795 E. Lancaster Ave. Suite 260, Villanova, PA 19085"
+      }
+    },
+    {
+      "name": "Rick Bone",
+      "group_id": "bone_asset",
+      "office": "Michigan",
+      "phone": "(947) 218-2092",
+      "address": "40950 Woodward Ave Suite 335, Bloomfield Hills, MI 48304"
+    },
+    {
+      "name": "Alex Huey",
+      "group_id": "eagle",
+      "office": "Ohio",
+      "phone": "(380) 225-5814",
+      "address": "4182 Worth Ave, Columbus, OH 43219"
+    },
+    {
+      "name": "Jason Smitka",
+      "group_id": "scout",
+      "office": "Kansas",
+      "phone": "(913) 354-4222",
+      "address": "13200 Metcalf Avenue, #105, Overland Park, KS 66213"
+    },
+    {
+      "name": "Sean O'Toole",
+      "group_id": "otoole",
+      "office": "Florida",
+      "phone": "(800) 775-5778",
+      "address": "900 Fox Valley Drive, Suite 206, Longwood, FL 32779"
+    },
+    {
+      "name": "Catherine Loquet",
+      "group_id": "advanced_wealth",
+      "office": "California",
+      "phone": "(949) 785-5407",
+      "address": "1835 Newport Blvd., #A109-138, Costa Mesa CA 92627"
+    },
+    {
+      "name": "Janie Kelly",
+      "group_id": "kelly",
+      "office": "Michigan",
+      "phone": "(248) 282-5632"
+    }
+  ],
+
+  "charities": [
+    { "id": "ntfb", "name": "North Texas Food Bank", "region": "Dallas" },
+    { "id": "tos", "name": "Township of Schaumburg", "region": "Rolling Meadows" },
+    { "id": "hcs", "name": "HCS Family Services", "region": "Oak Brook" },
+    { "id": "crisis", "name": "Crisis Nursery", "region": "St. Louis" },
+    { "id": "glened", "name": "Glen-Ed Pantry", "region": "Southern Illinois" },
+    { "id": "second_harvest", "name": "Second Harvest", "region": "Nashville" }
+  ],
+
+  "regions": [
+    { "id": "dallas", "name": "Dallas / Plano", "state": "TX", "group_id": "fta", "default_qty": 8000 },
+    { "id": "rolling_meadows", "name": "Rolling Meadows", "state": "IL", "group_id": "fta" },
+    { "id": "oak_brook", "name": "Oak Brook", "state": "IL", "group_id": "fta" },
+    { "id": "stlouis", "name": "St. Louis", "state": "MO", "group_id": "fta" },
+    { "id": "southern_il", "name": "Southern Illinois", "state": "IL", "group_id": "fta" },
+    { "id": "nashville", "name": "Nashville", "state": "TN", "group_id": "fta" },
+    { "id": "ct", "name": "Connecticut", "state": "CT", "group_id": "sam_ria", "default_qty": 9000 },
+    { "id": "md", "name": "Maryland", "state": "MD", "group_id": "sam_ria", "default_qty": 6000 },
+    { "id": "pa", "name": "Pennsylvania", "state": "PA", "group_id": "sam_ria" },
+    { "id": "michigan", "name": "Michigan", "state": "MI", "group_id": "bone_asset" },
+    { "id": "ohio", "name": "Ohio", "state": "OH", "group_id": "eagle" },
+    { "id": "kansas", "name": "Kansas", "state": "KS", "group_id": "scout" },
+    { "id": "florida", "name": "Florida", "state": "FL", "group_id": "otoole" },
+    { "id": "california", "name": "California", "state": "CA", "group_id": "advanced_wealth" }
+  ],
+
+  "class_types": [
+    { "id": "R90", "name": "R90 - Retirement 90" },
+    { "id": "R101", "name": "R101 - Retirement 101" },
+    { "id": "SS101", "name": "SS101 - Social Security 101" },
+    { "id": "W101", "name": "W101 - Women & Wealth 101" }
+  ]
+}
