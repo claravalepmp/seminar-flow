@@ -9,14 +9,16 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const includePast = searchParams.get('includePast') === 'true';
     const includeCompleted = searchParams.get('includeCompleted') === 'true';
+    const minWeeks = parseInt(searchParams.get('minWeeks') || '4', 10);
     const maxWeeks = parseInt(searchParams.get('maxWeeks') || '6', 10);
     const allWeeks = searchParams.get('allWeeks') === 'true';
     
     let orders = await getEnrichedOrders();
     
     // Default: only show upcoming active orders (not past, not completed)
-    // within the next 4-6 weeks (0-42 days)
+    // AND within 4-6 weeks window (28-42 days)
     if (!includePast && !includeCompleted) {
+      const minDays = minWeeks * 7;
       const maxDays = maxWeeks * 7;
       orders = orders.filter(o => {
         if (o.isPast || o.status === 'completed' || o.status === 'cancelled') {
@@ -24,8 +26,8 @@ export async function GET(request: Request) {
         }
         // If allWeeks=true, don't filter by weeks out
         if (allWeeks) return true;
-        // Otherwise, only include orders within the next 4-6 weeks (0 to maxDays)
-        return o.daysUntilEvent !== null && o.daysUntilEvent >= 0 && o.daysUntilEvent <= maxDays;
+        // Otherwise, only include orders within 4-6 week window
+        return o.daysUntilEvent !== null && o.daysUntilEvent >= minDays && o.daysUntilEvent <= maxDays;
       });
     }
     
