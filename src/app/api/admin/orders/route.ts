@@ -9,25 +9,25 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const includePast = searchParams.get('includePast') === 'true';
     const includeCompleted = searchParams.get('includeCompleted') === 'true';
-    const minWeeks = parseInt(searchParams.get('minWeeks') || '4', 10);
-    const maxWeeks = parseInt(searchParams.get('maxWeeks') || '6', 10);
     const allWeeks = searchParams.get('allWeeks') === 'true';
+    const weeksParam = searchParams.get('weeks'); // e.g. "4,5,6"
+    const selectedWeeks = weeksParam ? weeksParam.split(',').map(w => parseInt(w, 10)) : [4, 5, 6];
     
     let orders = await getEnrichedOrders();
     
     // Default: only show upcoming active orders (not past, not completed)
-    // AND within 4-6 weeks window (28-42 days)
+    // filtered by selected weeks
     if (!includePast && !includeCompleted) {
-      const minDays = minWeeks * 7;
-      const maxDays = maxWeeks * 7;
       orders = orders.filter(o => {
         if (o.isPast || o.status === 'completed' || o.status === 'cancelled') {
           return false;
         }
         // If allWeeks=true, don't filter by weeks out
         if (allWeeks) return true;
-        // Otherwise, only include orders within 4-6 week window
-        return o.daysUntilEvent !== null && o.daysUntilEvent >= minDays && o.daysUntilEvent <= maxDays;
+        // Otherwise, only include orders in selected weeks
+        if (o.daysUntilEvent === null) return false;
+        const weekOut = Math.ceil(o.daysUntilEvent / 7);
+        return selectedWeeks.includes(weekOut);
       });
     }
     

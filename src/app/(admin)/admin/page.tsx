@@ -432,7 +432,19 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [groupFilter, setGroupFilter] = useState<string>('all');
   const [viewFilter, setViewFilter] = useState<'active' | 'past' | 'all'>('active');
-  const [showAllWeeks, setShowAllWeeks] = useState(false);
+  const [selectedWeeks, setSelectedWeeks] = useState<Set<number>>(new Set([4, 5, 6]));
+  
+  const toggleWeek = (week: number) => {
+    setSelectedWeeks(prev => {
+      const next = new Set(prev);
+      if (next.has(week)) {
+        next.delete(week);
+      } else {
+        next.add(week);
+      }
+      return next;
+    });
+  };
   
   // Load data
   const loadData = useCallback(async () => {
@@ -440,7 +452,11 @@ export default function AdminDashboard() {
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (showAllWeeks) params.set('allWeeks', 'true');
+      if (selectedWeeks.size === 0) {
+        params.set('allWeeks', 'true');
+      } else {
+        params.set('weeks', Array.from(selectedWeeks).sort().join(','));
+      }
       const res = await fetch(`/api/admin/orders?${params}`);
       if (!res.ok) throw new Error('Failed to fetch orders');
       const data = await res.json();
@@ -451,11 +467,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [showAllWeeks]);
+  }, [selectedWeeks]);
   
   useEffect(() => {
     loadData();
-  }, [loadData, showAllWeeks]);
+  }, [loadData, selectedWeeks]);
   
   // Filter orders
   const filteredOrders = useMemo(() => {
@@ -643,19 +659,35 @@ export default function AdminDashboard() {
               ))}
             </select>
             
-            {/* 4-6 Weeks Toggle */}
-            <button
-              onClick={() => setShowAllWeeks(!showAllWeeks)}
-              className={cn(
-                "px-4 py-3 rounded-xl text-sm font-medium transition-all border flex items-center gap-2",
-                showAllWeeks
-                  ? "bg-violet-600 text-white border-violet-500 shadow-lg shadow-violet-500/20"
-                  : "bg-zinc-900/50 text-zinc-400 border-zinc-800/60 hover:text-white hover:bg-zinc-800"
-              )}
-            >
-              <Calendar className="w-4 h-4" />
-              {showAllWeeks ? 'All Future' : '4-6 Weeks'}
-            </button>
+            {/* Week Toggles */}
+            <div className="flex items-center gap-1 bg-zinc-900/50 rounded-xl border border-zinc-800/60 p-1">
+              <span className="px-2 text-xs text-zinc-500">Weeks:</span>
+              {[4, 5, 6].map((week) => (
+                <button
+                  key={week}
+                  onClick={() => toggleWeek(week)}
+                  className={cn(
+                    "px-3 py-2 rounded-lg text-sm font-medium transition-all",
+                    selectedWeeks.has(week)
+                      ? "bg-violet-600 text-white shadow-lg"
+                      : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                  )}
+                >
+                  {week}
+                </button>
+              ))}
+              <button
+                onClick={() => setSelectedWeeks(new Set())}
+                className={cn(
+                  "px-3 py-2 rounded-lg text-sm font-medium transition-all",
+                  selectedWeeks.size === 0
+                    ? "bg-violet-600 text-white shadow-lg"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                )}
+              >
+                All
+              </button>
+            </div>
             
             {/* Clear Filters */}
             {(search || statusFilter !== 'all' || groupFilter !== 'all' || viewFilter !== 'active') && (
