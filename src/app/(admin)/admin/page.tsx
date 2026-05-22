@@ -643,7 +643,7 @@ export default function AdminDashboard() {
               ))}
             </select>
             
-            {/* 4 Weeks Toggle */}
+            {/* Time Range Toggle */}
             <button
               onClick={() => setShowAllWeeks(!showAllWeeks)}
               className={cn(
@@ -654,7 +654,7 @@ export default function AdminDashboard() {
               )}
             >
               <Calendar className="w-4 h-4" />
-              {showAllWeeks ? 'All Future' : '4 Weeks'}
+              {showAllWeeks ? 'All Future' : 'Next 6 Weeks'}
             </button>
             
             {/* Clear Filters */}
