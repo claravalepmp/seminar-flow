@@ -562,7 +562,7 @@ export default function OrderDetailPage() {
                 {order.direct_mail_jobs.map(job => (
                   <div key={job.id} className="p-4 flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-white">{job.job_name || `Job #${job.order_number}`}</p>
+                      <p className="text-sm text-white">{job.job_name || `Job ${job.id.slice(-6)}`}</p>
                       <p className="text-xs text-zinc-500">
                         {job.quantity?.toLocaleString()} pieces • Print: {job.print_date || 'TBD'} • Mail: {job.mail_date || 'TBD'}
                       </p>

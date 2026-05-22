@@ -432,13 +432,16 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [groupFilter, setGroupFilter] = useState<string>('all');
   const [viewFilter, setViewFilter] = useState<'active' | 'past' | 'all'>('active');
+  const [showAllWeeks, setShowAllWeeks] = useState(false);
   
   // Load data
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/admin/orders');
+      const params = new URLSearchParams();
+      if (showAllWeeks) params.set('allWeeks', 'true');
+      const res = await fetch(`/api/admin/orders?${params}`);
       if (!res.ok) throw new Error('Failed to fetch orders');
       const data = await res.json();
       setOrders(data.orders || []);
@@ -448,11 +451,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showAllWeeks]);
   
   useEffect(() => {
     loadData();
-  }, [loadData]);
+  }, [loadData, showAllWeeks]);
   
   // Filter orders
   const filteredOrders = useMemo(() => {
@@ -639,6 +642,20 @@ export default function AdminDashboard() {
                 <option key={g} value={g}>{g}</option>
               ))}
             </select>
+            
+            {/* 4 Weeks Toggle */}
+            <button
+              onClick={() => setShowAllWeeks(!showAllWeeks)}
+              className={cn(
+                "px-4 py-3 rounded-xl text-sm font-medium transition-all border flex items-center gap-2",
+                showAllWeeks
+                  ? "bg-violet-600 text-white border-violet-500 shadow-lg shadow-violet-500/20"
+                  : "bg-zinc-900/50 text-zinc-400 border-zinc-800/60 hover:text-white hover:bg-zinc-800"
+              )}
+            >
+              <Calendar className="w-4 h-4" />
+              {showAllWeeks ? 'All Future' : '4 Weeks'}
+            </button>
             
             {/* Clear Filters */}
             {(search || statusFilter !== 'all' || groupFilter !== 'all' || viewFilter !== 'active') && (

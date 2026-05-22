@@ -9,16 +9,24 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const includePast = searchParams.get('includePast') === 'true';
     const includeCompleted = searchParams.get('includeCompleted') === 'true';
+    const maxWeeks = parseInt(searchParams.get('maxWeeks') || '4', 10);
+    const allWeeks = searchParams.get('allWeeks') === 'true';
     
     let orders = await getEnrichedOrders();
     
     // Default: only show upcoming active orders (not past, not completed)
+    // AND within maxWeeks (default 4 weeks = 28 days)
     if (!includePast && !includeCompleted) {
-      orders = orders.filter(o => 
-        !o.isPast && 
-        o.status !== 'completed' && 
-        o.status !== 'cancelled'
-      );
+      const maxDays = maxWeeks * 7;
+      orders = orders.filter(o => {
+        if (o.isPast || o.status === 'completed' || o.status === 'cancelled') {
+          return false;
+        }
+        // If allWeeks=true, don't filter by weeks out
+        if (allWeeks) return true;
+        // Otherwise, only include orders within maxWeeks
+        return o.daysUntilEvent !== null && o.daysUntilEvent <= maxDays;
+      });
     }
     
     // Sort by days until event (nearest first)
@@ -62,13 +70,13 @@ export async function GET(request: Request) {
         start_time: o.start_time,
         endTime: o.end_time || '',
         end_time: o.end_time,
-        charity: o.charity || o.charity_data?.name || '',
+        charity: o.charity_data?.name || '',
         classType: o.class_type || '',
         class_type: o.class_type,
         mailingQuantity: o.mailing_quantity || 0,
         mailing_quantity: o.mailing_quantity,
         mailerType: o.mailer_type || '',
-        mailerReturnAddress: o.mailer_return_address || '',
+        mailerReturnAddress: o.direct_mail_jobs?.[0]?.mailer_return_address || o.advisor_data?.mailer_return_address || '',
         landingPageUrl: o.landing_page_url || '',
         landing_page_url: o.landing_page_url,
         registrationPhone: o.advisor_data?.registration_phone || o.group_data?.registration_phone || '',
